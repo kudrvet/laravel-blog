@@ -3,6 +3,9 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -34,8 +37,26 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+        $this->reportable(
+            function (Throwable $e) {
+                //
+            }
+        );
+
+        $this->renderable(
+            function (Throwable $e) {
+                $data = [
+                    'success'   => 'false',
+                    'exception' => get_class($e),
+                    'message'   => $e->getMessage() ?? '',
+                ];
+
+                if ($e instanceof ValidationException) {
+                    $data = $data + ['errors' => $e->errors() ?? ''];
+                }
+
+                return new JsonResponse($data, 500, options: JSON_UNESCAPED_SLASHES);
+            }
+        );
     }
 }
