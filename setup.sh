@@ -4,7 +4,7 @@
     -v $(pwd):/var/www/html \
     -w /var/www/html \
     laravelsail/php80-composer:latest \
-    composer install --ignore-platform-reqs ;
+    composer install --ignore-platform-reqs --no-scripts;
 
 	docker compose up -d --build &&
 	docker exec -it laravel-blog_laravel.test_1 make install
