@@ -13,15 +13,11 @@ chmod -R ugo+rw /.composer
 if [ $# -gt 0 ];then
     exec gosu $WWWUSER "$@"
 else
-#  добавил это
-#    composer install
-#    cd /var/www/html
-#    php artisan key:gen --ansi
-#  	php artisan migrate
-#	  php artisan db:seed
-##	  php artisan schedule:run &
-#	 до сюда
+    cd /var/www/html &&
+    composer install &&
+    php artisan key:gen --ansi &&
+  	php artisan migrate &&
+	  php artisan db:seed &&
     /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
-
 fi
 
